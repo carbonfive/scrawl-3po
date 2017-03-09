@@ -55,7 +55,6 @@ if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL)) {
   console.error("Missing config values");
   process.exit(1);
 }
-
 /*
  * Use your own validation token. Check that the token used in the Webhook 
  * setup is the same token used here.
@@ -363,7 +362,8 @@ function receivedPostback(event) {
 
   // When a postback is called, we'll send a message back to the sender to 
   // let them know it was successful
-  sendTextMessage(senderID, "Postback called");
+  setTimeout(function (){sendTextMessage(senderID, "Greetings, I'm Scrawl-3PO, assembled by Carbon Five.")}, 1000);
+  setTimeout(function (){sendTextMessage(senderID, "We're going to make an EPIC SPACE OPERA scrawl that you can share with friends.")}, 2000);
 }
 
 /*
