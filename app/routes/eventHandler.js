@@ -6,7 +6,8 @@
  *
  */
 
-var getStarted = require('../models/getStarted')
+var messageHandler = require('../models/messageHandler')
+var receivedMessage = messageHandler.receivedMessage
 
 function requestBody (req, res) {
   var data = req.body;
