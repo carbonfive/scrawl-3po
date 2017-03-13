@@ -7,7 +7,7 @@ const
   https = require('https'),  
   request = require('request'),
   router = require('./app/router');
-const APP_SECRET = require('./app/models/setUp.js').APP_SECRET;
+const APP_SECRET = require('./app/models/authSetUp').APP_SECRET;
 
 var app = express();
 app.set('port', process.env.PORT || 5000);
@@ -38,9 +38,4 @@ function verifyRequestSignature(req, res, buf) {
   }
 }
 
-// Start server
-// Webhooks must be available via SSL with a certificate signed by a valid 
-// certificate authority.
-app.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
-});
+module.exports = app;

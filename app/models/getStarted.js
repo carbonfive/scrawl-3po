@@ -5,6 +5,11 @@
  * https://developers.facebook.com/docs/messenger-platform/webhook-reference/postback-received
  * 
  */
+var authSetUp = require('../models/authSetUp') 
+var request = require('request');
+
+var PAGE_ACCESS_TOKEN = authSetUp.PAGE_ACCESS_TOKEN
+
 function receivedPostback(event) {
   var senderID = event.sender.id;
   var recipientID = event.recipient.id;
@@ -68,5 +73,3 @@ function callSendAPI(messageData) {
 }
 
 module.exports.receivedPostback = receivedPostback;
-module.exports.sendTextMessage = sendTextMessage;
-module.exports.callSendAPI = callSendAPI;

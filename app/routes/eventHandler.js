@@ -6,14 +6,8 @@
  *
  */
 
-var setUp = require('../models/setUp.js') 
 var getStarted = require('../models/getStarted')
-var app = setUp.app
-PAGE_ACCESS_TOKEN = setUp.PAGE_ACCESS_TOKEN
 var receivedPostback = getStarted.receivedPostback
-var sendTextMessage = getStarted.sendTextMessage
-var callSendAPI = getStarted.callSendAPI
-  request = require('request');
 
 module.exports = function (req, res) {
   var data = req.body;
