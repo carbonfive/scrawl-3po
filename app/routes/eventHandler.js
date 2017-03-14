@@ -7,9 +7,8 @@
  */
 
 var getStarted = require('../models/getStarted')
-var receivedPostback = getStarted.receivedPostback
 
-module.exports = function (req, res) {
+function requestBody (req, res) {
   var data = req.body;
 
  // Make sure this is a page subscription
@@ -22,21 +21,7 @@ module.exports = function (req, res) {
 
       // Iterate over each messaging event
       pageEntry.messaging.forEach(function(messagingEvent) {
-        if (messagingEvent.optin) {
-          receivedAuthentication(messagingEvent);
-        } else if (messagingEvent.message) {
-          /* receivedMessage(messagingEvent);*/
-        } else if (messagingEvent.delivery) {
-          receivedDeliveryConfirmation(messagingEvent);
-        } else if (messagingEvent.postback) {
-          receivedPostback(messagingEvent);
-        } else if (messagingEvent.read) {
-          receivedMessageRead(messagingEvent);
-        } else if (messagingEvent.account_linking) {
-          receivedAccountLink(messagingEvent);
-        } else {
-          console.log("Webhook received unknown messagingEvent: ", messagingEvent);
-        }
+        handleMessagingEvent(messagingEvent)
       });
     });
 
@@ -48,3 +33,23 @@ module.exports = function (req, res) {
   }
 }
 
+function handleMessagingEvent (messagingEvent){
+        if (messagingEvent.optin) {
+          receivedAuthentication(messagingEvent);
+        } else if (messagingEvent.message) {
+           receivedMessage(messagingEvent);
+        } else if (messagingEvent.delivery) {
+          receivedDeliveryConfirmation(messagingEvent);
+        } else if (messagingEvent.postback) {
+          getStarted.receivedPostback(messagingEvent);
+        } else if (messagingEvent.read) {
+          receivedMessageRead(messagingEvent);
+        } else if (messagingEvent.account_linking) {
+          receivedAccountLink(messagingEvent);
+        } else {
+          console.log("Webhook received unknown messagingEvent: ", messagingEvent);
+        }
+}
+
+module.exports.handleMessagingEvent = handleMessagingEvent;
+module.exports.requestBody = requestBody;

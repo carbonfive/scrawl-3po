@@ -40,3 +40,4 @@ jspm_packages
 config/default.json
 
 *.swp
+*.swo
