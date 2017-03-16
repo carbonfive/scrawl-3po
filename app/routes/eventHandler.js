@@ -11,7 +11,7 @@ var getStarted = require('../models/getStarted')
 function requestBody (req, res) {
   var data = req.body;
 
- // Make sure this is a page subscription
+  // Make sure this is a page subscription
   if (data.object == 'page') {
     // Iterate over each entry
     // There may be multiple if batched
@@ -34,21 +34,21 @@ function requestBody (req, res) {
 }
 
 function handleMessagingEvent (messagingEvent){
-        if (messagingEvent.optin) {
-          receivedAuthentication(messagingEvent);
-        } else if (messagingEvent.message) {
-           receivedMessage(messagingEvent);
-        } else if (messagingEvent.delivery) {
-          receivedDeliveryConfirmation(messagingEvent);
-        } else if (messagingEvent.postback) {
-          getStarted.receivedPostback(messagingEvent);
-        } else if (messagingEvent.read) {
-          receivedMessageRead(messagingEvent);
-        } else if (messagingEvent.account_linking) {
-          receivedAccountLink(messagingEvent);
-        } else {
-          console.log("Webhook received unknown messagingEvent: ", messagingEvent);
-        }
+  if (messagingEvent.optin) {
+    receivedAuthentication(messagingEvent);
+  } else if (messagingEvent.message) {
+    receivedMessage(messagingEvent);
+  } else if (messagingEvent.delivery) {
+    receivedDeliveryConfirmation(messagingEvent);
+  } else if (messagingEvent.postback) {
+    getStarted.receivedPostback(messagingEvent);
+  } else if (messagingEvent.read) {
+    receivedMessageRead(messagingEvent);
+  } else if (messagingEvent.account_linking) {
+    receivedAccountLink(messagingEvent);
+  } else {
+    console.log("Webhook received unknown messagingEvent: ", messagingEvent);
+  }
 }
 
 module.exports.handleMessagingEvent = handleMessagingEvent;
