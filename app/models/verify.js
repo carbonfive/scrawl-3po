@@ -1,3 +1,6 @@
+var crypto = require('crypto');
+const APP_SECRET = require('./authSetUp').APP_SECRET;
+
 module.exports = function (req, res, buf) {
   var signature = req.headers["x-hub-signature"];
 
