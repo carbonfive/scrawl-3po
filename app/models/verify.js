@@ -1,4 +1,4 @@
-var crypto = require('crypto');
+const crypto = require('crypto');
 const APP_SECRET = require('./authSetUp').APP_SECRET;
 
 module.exports = function (req, res, buf) {
