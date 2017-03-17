@@ -14,11 +14,15 @@
  */
 var authSetUp = require('../models/authSetUp') 
 var request = require('request');
+var conversation = require('./conversation');
 
 var PAGE_ACCESS_TOKEN = authSetUp.PAGE_ACCESS_TOKEN
 
-function receivedMessage(event) {
-  console.log(receivedMessage)
+function message(event, text){
+  var senderID = event.sender.id;
+        sendTextMessage(senderID, text[0]);
+}
+function receivedMessage(event, text) {
   var senderID = event.sender.id;
   var recipientID = event.recipient.id;
   var timeOfMessage = event.timestamp;
@@ -28,7 +32,7 @@ function receivedMessage(event) {
     senderID, recipientID, timeOfMessage);
   console.log(JSON.stringify(message));
 
-  var isEcho = message.is_echo;
+  //  var isEcho = message.is_echo;
   var messageId = message.mid;
   var appId = message.app_id;
   var metadata = message.metadata;
@@ -103,15 +107,19 @@ function receivedMessage(event) {
         break;        
 
       case 'typing off':
-        sendTypingOff(senderID);
+;        sendTypingOff(senderID);
         break;        
 
       case 'account linking':
         sendAccountLinking(senderID);
         break;
 
+      case 'start':
+        sendTextMessage(senderID, "Let's get started creating your scrawl.");
+        break;
+
       default:
-        sendTextMessage(senderID, messageText);
+        sendTextMessage(senderID, text[0]);
     }
   } else if (messageAttachments) {
     sendTextMessage(senderID, "Message with attachment received");
@@ -162,4 +170,4 @@ function callSendAPI(messageData) {
   });  
 }
 
-module.exports.receivedMessage = receivedMessage;
+module.exports.receivedMessage = message;

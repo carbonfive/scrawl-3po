@@ -7,6 +7,8 @@
  */
 
 var messageHandler = require('../models/messageHandler')
+const getStarted = require('../models/getStarted')
+const conversation = require('../models/conversation')
 var receivedMessage = messageHandler.receivedMessage
 
 function requestBody (req, res) {
@@ -35,10 +37,10 @@ function requestBody (req, res) {
 }
 
 function handleMessagingEvent (messagingEvent){
+  var text = handleState(messagingEvent.sender.id);
   if (messagingEvent.optin) {
     receivedAuthentication(messagingEvent);
   } else if (messagingEvent.message) {
-    receivedMessage(messagingEvent);
   } else if (messagingEvent.delivery) {
     receivedDeliveryConfirmation(messagingEvent);
   } else if (messagingEvent.postback) {
@@ -50,7 +52,14 @@ function handleMessagingEvent (messagingEvent){
   } else {
     console.log("Webhook received unknown messagingEvent: ", messagingEvent);
   }
+   messageHandler.receivedMessage(messagingEvent, text);
 }
 
 module.exports.handleMessagingEvent = handleMessagingEvent;
 module.exports.requestBody = requestBody;
+
+function handleState(senderID){
+  var nextState = conversation.findNextState(senderID)
+  conversation.changeState(senderID, nextState);
+  return conversation.lookUpMessage(nextState);
+};
