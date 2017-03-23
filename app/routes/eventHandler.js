@@ -1,15 +1,7 @@
-/*
- * All callbacks for Messenger are POST-ed. They will be sent to the same
- * webhook. Be sure to subscribe your app to your page to receive callbacks
- * for your page. 
- * https://developers.facebook.com/docs/messenger-platform/product-overview/setup#subscribe_app
- *
- */
-
-var messageHandler = require('../models/messageHandler')
-const getStarted = require('../models/getStarted')
-const conversation = require('../models/conversation')
-var receivedMessage = messageHandler.receivedMessage
+const messageHandler = require('../models/messageHandler'),
+      getStarted = require('../models/getStarted'),
+      conversation = require('../models/conversation'),
+      receivedMessage = messageHandler.receivedMessage;
 
 function requestBody (req, res) {
   var data = req.body;
@@ -37,7 +29,6 @@ function requestBody (req, res) {
 }
 
 function handleMessagingEvent (messagingEvent){
-  var text = handleState(messagingEvent.sender.id);
   if (messagingEvent.optin) {
     receivedAuthentication(messagingEvent);
   } else if (messagingEvent.message) {
@@ -52,14 +43,15 @@ function handleMessagingEvent (messagingEvent){
   } else {
     console.log("Webhook received unknown messagingEvent: ", messagingEvent);
   }
-   messageHandler.receivedMessage(messagingEvent, text);
+  var text = handleState(messagingEvent.sender.id);
+  messageHandler.receivedMessage(messagingEvent, text);
 }
-
-module.exports.handleMessagingEvent = handleMessagingEvent;
-module.exports.requestBody = requestBody;
 
 function handleState(senderID){
   var nextState = conversation.findNextState(senderID)
   conversation.changeState(senderID, nextState);
-  return conversation.lookUpMessage(nextState);
+  return conversation.convo[nextState];
 };
+
+module.exports.handleMessagingEvent = handleMessagingEvent;
+module.exports.requestBody = requestBody;
