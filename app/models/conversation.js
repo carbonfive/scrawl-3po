@@ -1,6 +1,6 @@
 var users = {};
 var convo = {'introduction': ["Greetings, I'm Scrawl-3PO, assembled by Carbon Five.", "We're going to make an EPIC SPACE OPERA scrawl that you can share with friends."], 
-             'start': ["Let's get started creating your scrawl.", "localhost:3000"] , 
+             'start': ["Let's get started creating your scrawl.", "https://scrawl3po.herokuapp.com/"] , 
              'title': ["First, what's the name of your new EPIC SPACE OPERA episode?"],
              'episode':[]}
 

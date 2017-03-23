@@ -17,6 +17,7 @@ function requestBody (req, res) {
       // Iterate over each messaging event
       pageEntry.messaging.forEach(function(messagingEvent) {
         handleMessagingEvent(messagingEvent)
+        handleState(messagingEvent)
       });
     });
 
@@ -43,15 +44,13 @@ function handleMessagingEvent (messagingEvent){
   } else {
     console.log("Webhook received unknown messagingEvent: ", messagingEvent);
   }
-  var text = handleState(messagingEvent.sender.id);
-  messageHandler.receivedMessage(messagingEvent, text);
 }
 
-function handleState(senderID){
+function handleState(messagingEvent){
+  var senderID = messagingEvent.sender.id
   var nextState = conversation.findNextState(senderID)
   conversation.changeState(senderID, nextState);
-  return conversation.convo[nextState];
+  messageHandler.receivedMessage(messagingEvent, conversation.convo[nextState]);
 };
 
-module.exports.handleMessagingEvent = handleMessagingEvent;
 module.exports.requestBody = requestBody;
