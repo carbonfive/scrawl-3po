@@ -1,5 +1,5 @@
 var users = {};
-var convo = {'introduction': ["Greetings, I'm Scrawl-3PO, assembled by Carbon Five.", "We're going to make an EPIC SPACE OPERA scrawl that you can share with friends."], 
+const convo = {'introduction': ["Greetings, I'm Scrawl-3PO, assembled by Carbon Five.", "We're going to make an EPIC SPACE OPERA scrawl that you can share with friends."], 
              'start': ["Let's get started creating your scrawl.", "https://scrawl3po.herokuapp.com/"] , 
              'title': ["First, what's the name of your new EPIC SPACE OPERA episode?"],
              'episode':[]}
@@ -9,9 +9,9 @@ function changeState(userID, newState) {
 };
 
 function findNextState(userID){
-  var state = findState(userID);
+  const state = findState(userID);
   switch(state) {
-    case undefined:
+    case "introduction":
       return "start"
     case "start":
       return "title";
@@ -22,7 +22,7 @@ function findNextState(userID){
 
 function findState(userID) {
   if (users[userID] === undefined){
-    return undefined;
+    return "introduction";
   }else {
     return users[userID].state;
   }
