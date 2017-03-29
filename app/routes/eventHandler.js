@@ -1,12 +1,7 @@
-/*
- * All callbacks for Messenger are POST-ed. They will be sent to the same
- * webhook. Be sure to subscribe your app to your page to receive callbacks
- * for your page. 
- * https://developers.facebook.com/docs/messenger-platform/product-overview/setup#subscribe_app
- *
- */
-
-var getStarted = require('../models/getStarted')
+const messageHandler = require('../models/messageHandler'),
+      getStarted = require('../models/getStarted'),
+      conversations = require('../models/conversations'),
+      receivedMessage = messageHandler.receivedMessage;
 
 function requestBody (req, res) {
   var data = req.body;
@@ -22,6 +17,7 @@ function requestBody (req, res) {
       // Iterate over each messaging event
       pageEntry.messaging.forEach(function(messagingEvent) {
         handleMessagingEvent(messagingEvent)
+        handleState(messagingEvent)
       });
     });
 
@@ -37,7 +33,6 @@ function handleMessagingEvent (messagingEvent){
   if (messagingEvent.optin) {
     receivedAuthentication(messagingEvent);
   } else if (messagingEvent.message) {
-    receivedMessage(messagingEvent);
   } else if (messagingEvent.delivery) {
     receivedDeliveryConfirmation(messagingEvent);
   } else if (messagingEvent.postback) {
@@ -51,5 +46,11 @@ function handleMessagingEvent (messagingEvent){
   }
 }
 
-module.exports.handleMessagingEvent = handleMessagingEvent;
+function handleState(messagingEvent){
+  var senderID = messagingEvent.sender.id
+  var conversation = conversations.get(senderID)
+  var replyText = conversation.addMessage();
+  messageHandler.receivedMessage(senderID, replyText);
+};
+
 module.exports.requestBody = requestBody;
