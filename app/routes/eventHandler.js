@@ -1,9 +1,10 @@
 const messageHandler = require('../models/messageHandler'),
       getStarted = require('../models/getStarted'),
-      conversation = require('../models/conversation'),
+      conversations = require('../models/conversations'),
       receivedMessage = messageHandler.receivedMessage;
 
 function requestBody (req, res) {
+  console.log(req)
   var data = req.body;
 
   // Make sure this is a page subscription
@@ -48,9 +49,9 @@ function handleMessagingEvent (messagingEvent){
 
 function handleState(messagingEvent){
   var senderID = messagingEvent.sender.id
-  var nextState = conversation.findNextState(senderID)
-  conversation.changeState(senderID, nextState);
-  messageHandler.receivedMessage(messagingEvent, conversation.convo[nextState]);
+  var conversation = conversations.get(senderID)
+  var replyText = conversation.addMessage();
+  messageHandler.receivedMessage(senderID, replyText);
 };
 
 module.exports.requestBody = requestBody;
