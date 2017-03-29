@@ -4,7 +4,6 @@ const messageHandler = require('../models/messageHandler'),
       receivedMessage = messageHandler.receivedMessage;
 
 function requestBody (req, res) {
-  console.log(req)
   var data = req.body;
 
   // Make sure this is a page subscription
