@@ -5,8 +5,12 @@ const convo = {'introduction': ["Greetings, I'm Scrawl-3PO, assembled by Carbon 
              'start': ["Let's get started creating your scrawl.", "https://scrawl3po.herokuapp.com/"] , 
              'title': ["First, what's the name of your new EPIC SPACE OPERA episode?"],
              'episode':[]}
+const resBool = {'introduction': false, 'start': false, 'title': true, 'episode': false}
 
-function findNextState(state){
+function findNextState(state, response){
+  if (response == "billy"){
+    return "introduction"
+  }
   switch(state) {
     case "introduction":
       return "start"
@@ -20,8 +24,13 @@ function findNextState(state){
 function Conversation() {
   this.state = "introduction";
   this.addMessage = function() {
-    this.state = findNextState(this.state);
     return convo[this.state];
+  }
+  this.applyNextState = function(response="") {
+    this.state = findNextState(this.state, response);
+  }
+  this.applyResBool = function(){
+    return resBool[this.state]
   }
 }
 

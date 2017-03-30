@@ -1,10 +1,10 @@
 const reply = require('./reply');
 
 function receivedMessage(senderID, text){
-  var time = 3000
+  var time = 0
   text.forEach(function(t){
     setTimeout(function(){ reply.sendTextMessage(senderID, t)}, time);
-    time += 1000
+    time += 2000
   })      
 }
 

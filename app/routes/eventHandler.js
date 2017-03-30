@@ -16,7 +16,6 @@ function requestBody (req, res) {
 
       // Iterate over each messaging event
       pageEntry.messaging.forEach(function(messagingEvent) {
-        handleMessagingEvent(messagingEvent)
         handleState(messagingEvent)
       });
     });
@@ -48,9 +47,16 @@ function handleMessagingEvent (messagingEvent){
 
 function handleState(messagingEvent){
   var senderID = messagingEvent.sender.id
+  // var response = response 
   var conversation = conversations.get(senderID)
   var replyText = conversation.addMessage();
+  var conversationBool = conversation.applyResBool();
+
   messageHandler.receivedMessage(senderID, replyText);
+  if (conversationBool === false){
+    conversation.applyNextState()
+    setTimeout(function(){handleState(messagingEvent)}, 3000)
+  }
 };
 
 module.exports.requestBody = requestBody;
