@@ -4,8 +4,8 @@ var conversations = {};
 const convo = {'introduction': ["Greetings, I'm Scrawl-3PO, assembled by Carbon Five.", "We're going to make an EPIC SPACE OPERA scrawl that you can share with friends."], 
              'start': ["Let's get started creating your scrawl.", "https://scrawl3po.herokuapp.com/"] , 
              'title': ["First, what's the name of your new EPIC SPACE OPERA episode?"],
-             'episode':[]}
-const resBool = {'introduction': false, 'start': false, 'title': true, 'episode': false}
+             'episode':["This is an episode"]}
+const responseExpected = {'introduction': false, 'start': false, 'title': true, 'episode': true}
 
 function findNextState(state, response){
   if (response == "billy"){
@@ -29,8 +29,8 @@ function Conversation() {
   this.applyNextState = function(response="") {
     this.state = findNextState(this.state, response);
   }
-  this.applyResBool = function(){
-    return resBool[this.state]
+  this.isResponseExpected = function(){
+    return responseExpected[this.state]
   }
 }
 

@@ -16,7 +16,7 @@ function requestBody (req, res) {
 
       // Iterate over each messaging event
       pageEntry.messaging.forEach(function(messagingEvent) {
-        handleState(messagingEvent)
+        handleInput(messagingEvent)
       });
     });
 
@@ -28,35 +28,54 @@ function requestBody (req, res) {
   }
 }
 
-function handleMessagingEvent (messagingEvent){
-  if (messagingEvent.optin) {
-    receivedAuthentication(messagingEvent);
-  } else if (messagingEvent.message) {
-  } else if (messagingEvent.delivery) {
-    receivedDeliveryConfirmation(messagingEvent);
-  } else if (messagingEvent.postback) {
-    getStarted.receivedPostback(messagingEvent);
-  } else if (messagingEvent.read) {
-    receivedMessageRead(messagingEvent);
-  } else if (messagingEvent.account_linking) {
-    receivedAccountLink(messagingEvent);
-  } else {
-    console.log("Webhook received unknown messagingEvent: ", messagingEvent);
+//function handleMessagingEvent (messagingEvent){
+//  if (messagingEvent.optin) {
+//    receivedAuthentication(messagingEvent);
+//  } else if (messagingEvent.message) {
+//  } else if (messagingEvent.delivery) {
+//    receivedDeliveryConfirmation(messagingEvent);
+//  } else if (messagingEvent.postback) {
+//    getStarted.receivedPostback(messagingEvent);
+//  } else if (messagingEvent.read) {
+//    receivedMessageRead(messagingEvent);
+//  } else if (messagingEvent.account_linking) {
+//    receivedAccountLink(messagingEvent);
+//  } else {
+//    console.log("Webhook received unknown messagingEvent: ", messagingEvent);
+//  }
+//}
+
+function handleInput(messagingEvent){
+  var message = messagingEvent.message
+
+  if (message){
+    userResponse(messagingEvent)
+  }else {
+    handleState(messagingEvent)
   }
 }
 
 function handleState(messagingEvent){
   var senderID = messagingEvent.sender.id
-  // var response = response 
   var conversation = conversations.get(senderID)
+  var responseExpected = conversation.isResponseExpected();
   var replyText = conversation.addMessage();
-  var conversationBool = conversation.applyResBool();
 
   messageHandler.receivedMessage(senderID, replyText);
-  if (conversationBool === false){
+
+  if (!responseExpected){
     conversation.applyNextState()
-    setTimeout(function(){handleState(messagingEvent)}, 3000)
+    handleState(messagingEvent)
   }
 };
+
+function userResponse(messagingEvent){
+  var senderID = messagingEvent.sender.id
+  var conversation = conversations.get(senderID)
+  var response = messagingEvent.message.text
+
+  conversation.applyNextState(response)
+  handleState(messagingEvent)
+}
 
 module.exports.requestBody = requestBody;
