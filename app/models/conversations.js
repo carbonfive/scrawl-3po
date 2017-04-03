@@ -8,7 +8,7 @@ const convo = {'introduction': ["Greetings, I'm Scrawl-3PO, assembled by Carbon 
 const responseExpected = {'introduction': false, 'start': false, 'title': true, 'episode': true}
 
 function findNextState(state, response){
-  if (response == "billy"){
+  if (response === "billy"){
     return "introduction"
   }
   switch(state) {
@@ -18,19 +18,20 @@ function findNextState(state, response){
       return "title";
     case "title":
       return "episode";
+    default:
+      return "introduction";
   }
 }
 
 function Conversation() {
-  this.state = "introduction";
-  this.addMessage = function() {
-    return convo[this.state];
-  }
-  this.applyNextState = function(response="") {
-    this.state = findNextState(this.state, response);
-  }
-  this.isResponseExpected = function(){
-    return responseExpected[this.state]
+  this.state = "";
+  this.addMessage = function(message) {
+    this.state = findNextState(this.state, message);
+    var responsesForState = convo[this.state];
+    if(!responseExpected[this.state]) {
+      responsesForState = responsesForState.concat(this.addMessage());
+    }
+    return responsesForState;
   }
 }
 

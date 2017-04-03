@@ -16,7 +16,7 @@ function requestBody (req, res) {
 
       // Iterate over each messaging event
       pageEntry.messaging.forEach(function(messagingEvent) {
-        handleInput(messagingEvent)
+        handleState(messagingEvent)
       });
     });
 
@@ -45,37 +45,16 @@ function requestBody (req, res) {
 //  }
 //}
 
-function handleInput(messagingEvent){
-  var message = messagingEvent.message
-
-  if (message){
-    userResponse(messagingEvent)
-  }else {
-    handleState(messagingEvent)
-  }
-}
-
 function handleState(messagingEvent){
+  var message = messagingEvent.message
+  if (message === undefined) {
+    var message = {text: ""}
+  }
   var senderID = messagingEvent.sender.id
   var conversation = conversations.get(senderID)
-  var responseExpected = conversation.isResponseExpected();
-  var replyText = conversation.addMessage();
+  var replyText = conversation.addMessage(message.text);
 
   messageHandler.receivedMessage(senderID, replyText);
-
-  if (!responseExpected){
-    conversation.applyNextState()
-    handleState(messagingEvent)
-  }
 };
-
-function userResponse(messagingEvent){
-  var senderID = messagingEvent.sender.id
-  var conversation = conversations.get(senderID)
-  var response = messagingEvent.message.text
-
-  conversation.applyNextState(response)
-  handleState(messagingEvent)
-}
 
 module.exports.requestBody = requestBody;
