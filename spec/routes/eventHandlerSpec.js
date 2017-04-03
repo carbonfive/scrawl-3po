@@ -1,30 +1,32 @@
-const rewire = require('rewire')   
-      eventHandler = rewire('../../app/routes/eventHandler'),
-      getStarted = require('../../app/models/getStarted'),
-      handleMessagingEvent = eventHandler.__get__('handleMessagingEvent');
+const rewire = require('rewire'),   
+      eventHandler = rewire('../../app/routes/eventHandler');
 
 describe("eventHandler", function() {
-  beforeEach(function() {
-    spyOn(getStarted, 'receivedPostback');        
+  var request = {
+    body: {
+      object: 'page',
+      entry: [
+        { messaging: [1, 2, 3] },
+        { messaging: [4, 5, 6] },
+      ]
+    }
+  }
+  var response = { sendStatus: jasmine.createSpy('sendStatus') };
+  var inputMock ={ handleInput: jasmine.createSpy('handleInput')};
+
+  beforeEach(function(){
+    eventHandler.__set__('input', inputMock);
   });
 
-  describe("handleMessagingEvent", function() {
-    it("tracks that receivedPostback was called", function() {
-      //given
-      var messagingEvent = {postback:{}}
-      //when
-      handleMessagingEvent(messagingEvent);
-      //then
-      expect(getStarted.receivedPostback).toHaveBeenCalled();
+  describe("requestBody", function(){
+    it('always responds with success', function() {
+      eventHandler.requestBody(request, response);
+      expect(response.sendStatus).toHaveBeenCalledWith(200);
     });
 
-    it("tracks that receivedPostback was not called", function() {
-      //given
-      var messagingEvent = {}
-      //when
-      handleMessagingEvent(messagingEvent);
-      //then
-      expect(getStarted.receivedPostback).not.toHaveBeenCalled();
-    });
+    it('sends all messaging events to handleInput', function() {
+      eventHandler.requestBody(request, response);
+      expect(inputMock.handleInput).toHaveBeenCalledWith(1);
+    })
   });
 });

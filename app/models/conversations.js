@@ -1,4 +1,3 @@
-var users = {};
 var conversations = {};
 
 const convo = {'introduction': ["Greetings, I'm Scrawl-3PO, assembled by Carbon Five.", "We're going to make an EPIC SPACE OPERA scrawl that you can share with friends."], 

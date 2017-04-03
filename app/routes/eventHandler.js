@@ -1,7 +1,4 @@
-const messageHandler = require('../models/messageHandler'),
-      getStarted = require('../models/getStarted'),
-      conversations = require('../models/conversations'),
-      receivedMessage = messageHandler.receivedMessage;
+var input = require('../models/input');
 
 function requestBody (req, res) {
   var data = req.body;
@@ -11,19 +8,11 @@ function requestBody (req, res) {
     // Iterate over each entry
     // There may be multiple if batched
     data.entry.forEach(function(pageEntry) {
-      var pageID = pageEntry.id;
-      var timeOfEvent = pageEntry.time;
-
-      // Iterate over each messaging event
       pageEntry.messaging.forEach(function(messagingEvent) {
-        handleState(messagingEvent)
+        input.handleInput(messagingEvent)
       });
     });
 
-    // Assume all went well.
-    //
-    // You must send back a 200, within 20 seconds, to let us know you've 
-    // successfully received the callback. Otherwise, the request will time out.
     res.sendStatus(200);
   }
 }
@@ -44,17 +33,5 @@ function requestBody (req, res) {
 //    console.log("Webhook received unknown messagingEvent: ", messagingEvent);
 //  }
 //}
-
-function handleState(messagingEvent){
-  var message = messagingEvent.message
-  if (message === undefined) {
-    var message = {text: ""}
-  }
-  var senderID = messagingEvent.sender.id
-  var conversation = conversations.get(senderID)
-  var replyText = conversation.addMessage(message.text);
-
-  messageHandler.receivedMessage(senderID, replyText);
-};
 
 module.exports.requestBody = requestBody;
