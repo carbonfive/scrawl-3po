@@ -32,7 +32,8 @@ function Conversation() {
   this.scrawl_id = Object.keys(scrawl).length + 1;
   this.addMessage = function(message) {
     this.state = findNextState(this.state, message);
-    var responsesForState = foo(this.state, this.scrawl_id, message);
+    saveDate(this.state, this.scrawl_id, message)
+    var responsesForState = findResponse(this.state, this.scrawl_id);
     if(!responseExpected[this.state]) {
       responsesForState = responsesForState.concat(this.addMessage());
     }
@@ -51,14 +52,22 @@ function get(userId){
   return conversation;
 }
 
-function foo(state, scrawl_id, message){
-  if (state === 'episode'){
-    scrawl[scrawl_id] = {title: message}
-    return responsesForState = convo[state];
-  }else if (state === 'title-confirmation'){
-    return responsesForState = [convo[state][0]].concat(["Epic space opera - Episode "+ scrawl_id +" : "+ scrawl[scrawl_id].title]).concat([convo[state][1]]);
-  }else{
-    return responsesForState = convo[state];
+function saveDate(state, scrawl_id, message){
+  switch(state) { 
+    case  'episode':
+      scrawl[scrawl_id] = {title: message}
+    default:
+      return 
+  }
+}
+
+
+function findResponse(state, scrawl_id){
+  switch(state) { 
+    case 'title-confirmation':
+      return responsesForState = [convo[state][0]].concat(["Epic space opera - Episode "+ scrawl_id +" : "+ scrawl[scrawl_id].title]).concat([convo[state][1]]);
+    default:
+      return responsesForState = convo[state];
   }
 }
 
